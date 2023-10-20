@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const todosSlice = createSlice({
 	name: "todoList",
@@ -8,7 +8,9 @@ const todosSlice = createSlice({
 			state.push(action.payload);
 		},
 		toggleTodoStatus: (state, action) => {
-			const currentTodo = state.todos.find((todo) => todo.id === action.payload.id);
+			const currentTodo = state.todos.find(
+				(todo) => todo.id === action.payload.id
+			);
 			if (currentTodo) {
 				currentTodo.completed = !currentTodo.completed;
 			}
@@ -27,36 +29,42 @@ const todosSlice = createSlice({
 				state.todos.push(action.payload);
 			})
 			.addCase(updateTodo.fulfilled, (state, action) => {
-				console.log("state: ", current(state), action);
-
-				const currentTodo = state.todos.find((todo) => todo.id === action.payload.id);
-				console.log("log: ", currentTodo);
-				currentTodo.completed = !currentTodo.completed
-
+				const currentTodo = state.todos.find(
+					(todo) => todo.id === action.payload.id
+				);
+				currentTodo.completed = !currentTodo.completed;
+			})
+			.addCase(deleteTodo.fulfilled, (state, action) => {
+				const currentTodo = state.todos.filter(
+					(todo) => todo.id !== action.payload.id
+				);
+				state.todos = currentTodo;
 			});
 	},
 });
 
-
 export const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
-	const res = await fetch('https://65320c704d4c2e3f333d863c.mockapi.io/api/todos');
+	const res = await fetch(
+		"https://65320c704d4c2e3f333d863c.mockapi.io/api/todos"
+	);
 	const data = await res.json();
-	console.log(data);
 	return data;
 });
 
 export const addNewTodo = createAsyncThunk(
 	"todos/addNewTodo",
 	async (newTodo) => {
-		console.log("new todo",JSON.stringify(newTodo));
-		const res = await fetch('https://65320c704d4c2e3f333d863c.mockapi.io/api/todos', {
-			method: "POST",
-			body: JSON.stringify(newTodo),
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			  },
-		});
+		const res = await fetch(
+			"https://65320c704d4c2e3f333d863c.mockapi.io/api/todos",
+			{
+				method: "POST",
+				body: JSON.stringify(newTodo),
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			}
+		);
 		const data = await res.json();
 		return data;
 	}
@@ -64,29 +72,32 @@ export const addNewTodo = createAsyncThunk(
 
 export const updateTodo = createAsyncThunk(
 	"todos/updateTodo",
-	async (updateTodo, checked) => {
-		console.log(JSON.stringify(checked));
-		const res = await fetch(`https://65320c704d4c2e3f333d863c.mockapi.io/api/todos/${updateTodo}`, {
-			method: "PUT",
-			body: JSON.stringify(checked),
-		});
+	async ({ id, checked }) => {
+		const res = await fetch(
+			`https://65320c704d4c2e3f333d863c.mockapi.io/api/todos/${id}`,
+			{
+				method: "PUT",
+				body: JSON.stringify({ completed: !checked }),
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			}
+		);
 		const data = await res.json();
 		return data;
 	}
 );
 
-/*
- => todos/fetchTodos/pending
- => todos/fetchTodos/fullfilled
- => todos/fetchTodos/rejected
- */
+export const deleteTodo = createAsyncThunk("todos/deleteTodo", async (id) => {
+	const res = await fetch(
+		`https://65320c704d4c2e3f333d863c.mockapi.io/api/todos/${id}`,
+		{
+			method: "DELETE",
+		}
+	);
+	const data = await res.json();
+	return data;
+});
 
 export default todosSlice;
-
-// export function addTodos(todo) { //think function - thunk action
-// 	return function addTodoThunk(dispatch, getState) {
-// 		todo.name = 'Test';
-// 		dispatch(todosSlice.actions.addTodo(todo))
-// 		console.log('after', getState());
-// 	}
-// }

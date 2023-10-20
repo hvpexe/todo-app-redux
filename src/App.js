@@ -18,27 +18,14 @@ function App() {
 	useEffect(() => {
 		dispatch(fetchTodos());
 	}, []);
-	// useEffect(() => {
-	// 	fetch("/api/todos", {
-	// 		method: "POST",
-	// 		body: JSON.stringify({
-	// 			id: 1,
-	// 			name: "Learn yoga",
-	// 			completed: false,
-	// 			priority: "Medium",
-	// 		}),
-	// 	}).then((res) => {
-	// 		fetch("/api/todos")
-	// 			.then((res) => res.json())
-	// 			.then((res) => console.log(res));
-	// 	});
-	// }, []);
 	return (
 		<div
 			style={{
 				width: 500,
 				margin: "0 auto",
 				display: "flex",
+				alignItems: "center",
+				justifyContent: "space-between",
 				flexDirection: "column",
 				backgroundColor: "white",
 				padding: 20,

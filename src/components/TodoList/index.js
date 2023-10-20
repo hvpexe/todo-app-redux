@@ -39,7 +39,6 @@ export default function TodoList() {
 
 	const handleInputChange = (e) => {
 		setTodoName(e.target.value);
-		console.log(todoName);
 	};
 
 	const handlePriorityChange = (value) => {
@@ -47,19 +46,22 @@ export default function TodoList() {
 	};
 
 	return (
-		<Row style={{ height: "calc(100% - 40px)" }}>
-			<Col span={24} style={{ height: "calc(100% - 40px)", overflowY: "auto" }}>
-				{todoList.map((todo) => (
-					<Todo
-						key={todo.id}
-						id={todo.id}
-						name={todo.name}
-						prioriry={todo.priority}
-						completed={todo.completed}
-					/>
-				))}
-			</Col>
-			<Col span={24}>
+		<>
+			<Row style={{ height: "100%", width: "100%", overflow: "auto" }}>
+				<Col span={50} style={{ width: "100%", overflowY: "auto"}}>
+					{todoList.map((todo) => (
+						<Todo
+							key={todo.id}
+							id={todo.id}
+							name={todo.name}
+							prioriry={todo.priority}
+							completed={todo.completed}
+						/>
+					))}
+				</Col>
+			</Row>
+
+			<Col style={{ marginBottom: "1rem", width: "100%", marginTop: "1rem" }}>
 				<Input.Group style={{ display: "flex" }} compact>
 					<Input value={todoName} onChange={handleInputChange} />
 					<Select
@@ -82,6 +84,6 @@ export default function TodoList() {
 					</Button>
 				</Input.Group>
 			</Col>
-		</Row>
+		</>
 	);
 }
